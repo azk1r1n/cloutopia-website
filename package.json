@@ -1,0 +1,24 @@
+{
+  "name": "cloutopia-website",
+  "version": "1.0.0",
+  "description": "Cloutopia is an AI-powered cloud recognition platform that allows users to upload photos, chat with AI to identify cloud types and guess locations, and create blog posts from their discoveries.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:cloud": "playwright test tests/cloud-recognition.spec.js",
+    "test:e2e": "playwright test tests/e2e.spec.js",
+    "report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.54.1"
+  }
+}
