@@ -1,24 +1,29 @@
 {
-  "name": "cloutopia-website",
-  "version": "1.0.0",
-  "description": "Cloutopia is an AI-powered cloud recognition platform that allows users to upload photos, chat with AI to identify cloud types and guess locations, and create blog posts from their discoveries.",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "name": "cloutopia",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
-    "test:cloud": "playwright test tests/cloud-recognition.spec.js",
-    "test:e2e": "playwright test tests/e2e.spec.js",
-    "report": "playwright show-report"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.525.0",
+    "next": "15.3.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
-    "@playwright/test": "^1.54.1"
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

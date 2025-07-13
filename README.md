@@ -1,134 +1,78 @@
-# Cloutopia - Cloud Recognition Website
+# Cloutopia - Cloud Recognition App
 
-Cloutopia is an AI-powered cloud recognition platform that allows users to upload photos, chat with AI to identify cloud types and guess locations, and create blog posts from their discoveries.
+A Next.js application for cloud recognition and atmospheric analysis. Upload images of clouds or sky, and get AI-powered identification of cloud formations with location insights.
 
-## 🌤️ Features
+## Features
 
-- **Cloud Recognition**: Upload photos and get AI-powered cloud type identification
-- **Location Guessing**: AI analyzes weather patterns to estimate photo locations  
-- **Interactive Chat**: Conversational interface for asking questions about clouds
-- **Blog Platform**: Create and share blog posts from chat conversations
-- **User Authentication**: Personal dashboards and blog management
+- 🌤️ **Cloud Identification**: AI-powered recognition of cloud formations
+- 🌍 **Location Analysis**: Atmospheric pattern analysis to guess photo locations  
+- 💬 **Interactive Chat**: Large chat interface for seamless interaction
+- 📸 **Image Upload**: Drag-and-drop or click to upload cloud photos
+- ☀️ **Light Theme**: Modern, clean light interface
+- 📱 **Responsive Design**: Works on desktop and mobile devices
 
-## 🏗️ Project Structure
+## Tech Stack
+
+- **Frontend**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Backend**: Python (future integration)
+
+## Getting Started
+
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Usage
+
+1. **Upload an Image**: Click the upload button or drag and drop a cloud/sky photo
+2. **Ask Questions**: Type questions about cloud formations, weather patterns, or location
+3. **Get AI Analysis**: Receive detailed analysis of cloud types and atmospheric conditions
+4. **Location Insights**: Get educated guesses about where the photo might have been taken
+
+## Project Structure
 
 ```
-cloutopia-website/
-├── frontend/          # Next.js 14 with TypeScript and Tailwind CSS
-├── backend/           # FastAPI with Python
-├── docs/             # Project documentation
-└── scripts/          # Utility scripts
+src/
+├── app/
+│   ├── page.tsx          # Main application page
+│   ├── layout.tsx        # Root layout
+│   └── globals.css       # Global styles
+└── components/
+    ├── Header.tsx        # Navigation header
+    ├── ChatInterface.tsx # Main chat interface
+    └── ImageUpload.tsx   # File upload component
 ```
 
-## 🚀 Quick Start
+## Development
 
-### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- PostgreSQL (for production)
+- The page auto-updates as you edit files
+- Built with TypeScript for type safety
+- Uses Tailwind CSS for styling
+- Prepared for Python backend integration
 
-### Development Setup
+## Future Enhancements
 
-1. **Clone and setup environment**:
-   ```bash
-   git clone <your-repo-url>
-   cd cloutopia-website
-   cp .env.example .env.local
-   cp .env.example backend/.env
-   ```
+- [ ] Python backend integration for AI analysis
+- [ ] Real-time weather data integration
+- [ ] User authentication and chat history
+- [ ] Advanced cloud classification models
+- [ ] Geolocation-based suggestions
 
-2. **Start Backend**:
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On macOS/Linux
-   pip install -r requirements.txt
-   uvicorn app.main:app --reload
-   ```
+## Deploy on Vercel
 
-3. **Start Frontend**:
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-4. **Access the application**:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
-
-## 🔧 Technology Stack
-
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first styling
-- **Lucide React** - Icon library
-- **Zustand** - State management
-
-### Backend
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - Database ORM
-- **PostgreSQL** - Production database
-- **Autogen** - Multi-agent AI conversations
-- **OpenAI API** - LLM integration
-
-### Infrastructure
-- **Vercel** - Frontend hosting
-- **Google Cloud Platform** - Backend hosting
-- **Cloudflare** - CDN and DNS
-
-## 📖 Documentation
-
-- [Development Plan](docs/dev_plan.md)
-- [Setup Instructions](docs/setup/README.md)
-- [API Documentation](http://localhost:8000/docs) (when running)
-
-## 🔑 Environment Variables
-
-Create `.env.local` for frontend and `.env` for backend using `.env.example` as template.
-
-Key variables:
-- `OPENAI_API_KEY` - Required for AI functionality
-- `DATABASE_URL` - PostgreSQL connection string
-- `NEXTAUTH_SECRET` - Authentication secret
-
-## 🚢 Deployment
-
-### Frontend (Vercel)
-1. Connect GitHub repository to Vercel
-2. Configure build settings:
-   - Build Command: `cd frontend && npm run build`
-   - Output Directory: `frontend/.next`
-3. Add environment variables
-
-### Backend (Google Cloud Platform)
-1. Deploy to Cloud Run:
-   ```bash
-   gcloud run deploy cloutopia-api --source backend
-   ```
-2. Set up Cloud SQL for PostgreSQL
-3. Configure environment variables
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-For questions and support:
-1. Check the [documentation](docs/)
-2. Review [setup instructions](docs/setup/README.md)
-3. Open an issue on GitHub
-
----
-
-Built with ❤️ for cloud enthusiasts around the world!
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
