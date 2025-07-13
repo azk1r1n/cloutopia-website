@@ -1,8 +1,8 @@
 'use client'
 
 import Header from '../../components/Header'
-import Link from 'next/link'
-import { Mail, MapPin, Phone, Twitter, Instagram, Linkedin, Send } from 'lucide-react'
+import Footer from '../../components/Footer'
+import { Mail, MapPin, Phone, Send } from 'lucide-react'
 
 export default function ContactPage() {
   return (
@@ -192,50 +192,7 @@ export default function ContactPage() {
           </div>
         </main>
 
-        {/* Alpine-style Footer */}
-        <footer className="flex flex-col items-center py-8 mt-24 border-t border-gray-200 dark:border-gray-700">
-          <div className="mb-8">
-            <nav className="flex justify-center space-x-8 text-base font-medium">
-              <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">About</Link>
-              <Link href="/blog" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Articles</Link>
-              <Link href="/contact" className="text-blue-600 dark:text-blue-400">Contact</Link>
-            </nav>
-          </div>
-          
-          <p className="text-center text-gray-600 dark:text-gray-400 mb-4">
-            Follow me on
-          </p>
-          
-          <div className="flex justify-center space-x-4">
-            <a 
-              href="https://twitter.com/cloutopia" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              aria-label="Twitter"
-            >
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a 
-              href="https://instagram.com/cloutopia" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-5 h-5" />
-            </a>
-            <a 
-              href="https://linkedin.com/company/cloutopia" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-500 dark:text-gray-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-5 h-5" />
-            </a>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   )
