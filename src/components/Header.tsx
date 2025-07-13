@@ -4,9 +4,27 @@ import Image from 'next/image';
 import { Settings, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Helper function to determine if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === '/' && pathname === '/') return true;
+    if (href !== '/' && pathname.startsWith(href)) return true;
+    return false;
+  };
+
+  // Helper function to get link classes
+  const getLinkClasses = (href: string) => {
+    const baseClasses = "transition-colors";
+    if (isActiveLink(href)) {
+      return `${baseClasses} text-blue-600 hover:text-blue-700 font-medium`;
+    }
+    return `${baseClasses} text-gray-600 hover:text-gray-900`;
+  };
 
   return (
     <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm shrink-0">
@@ -26,13 +44,16 @@ export default function Header() {
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-8">
-        <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/" className={getLinkClasses('/')}>
+          Home
+        </Link>
+        <Link href="/about" className={getLinkClasses('/about')}>
           About
         </Link>
-        <Link href="/blog" className="text-blue-600 hover:text-blue-700 transition-colors font-medium">
+        <Link href="/blog" className={getLinkClasses('/blog')}>
           Articles
         </Link>
-        <Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/contact" className={getLinkClasses('/contact')}>
           Contact
         </Link>
       </nav>
@@ -74,22 +95,29 @@ export default function Header() {
         <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 md:hidden">
           <nav className="flex flex-col p-4 space-y-4">
             <Link 
+              href="/" 
+              className={getLinkClasses('/')}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link 
               href="/about" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className={getLinkClasses('/about')}
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </Link>
             <Link 
               href="/blog" 
-              className="text-blue-600 hover:text-blue-700 transition-colors font-medium"
+              className={getLinkClasses('/blog')}
               onClick={() => setIsMenuOpen(false)}
             >
               Articles
             </Link>
             <Link 
               href="/contact" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className={getLinkClasses('/contact')}
               onClick={() => setIsMenuOpen(false)}
             >
               Contact

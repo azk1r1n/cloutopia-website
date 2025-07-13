@@ -19,7 +19,7 @@ export default function ContactPage() {
             </h1>
             <div className="max-w-2xl mx-auto">
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                Have questions about cloud recognition, weather patterns, or want to collaborate? We'd love to hear from you.
+                Have questions about cloud recognition, weather patterns, or want to collaborate? We&apos;d love to hear from you.
               </p>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function ContactPage() {
                       <span className="ml-2 text-gray-500 group-open:rotate-180 transition-transform">▼</span>
                     </summary>
                     <div className="p-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-                      Currently, Cloutopia requires an internet connection for AI processing. We're working on offline capabilities for basic cloud identification.
+                      Currently, Cloutopia requires an internet connection for AI processing. We&apos;re working on offline capabilities for basic cloud identification.
                     </div>
                   </details>
                   
@@ -183,7 +183,7 @@ export default function ContactPage() {
                       <span className="ml-2 text-gray-500 group-open:rotate-180 transition-transform">▼</span>
                     </summary>
                     <div className="p-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-                      Yes, we use enterprise-grade encryption and don't store your images permanently unless you choose to save them to your account.
+                      Yes, we use enterprise-grade encryption and don&apos;t store your images permanently unless you choose to save them to your account.
                     </div>
                   </details>
                 </div>
