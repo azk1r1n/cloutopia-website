@@ -1,384 +1,263 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Calendar, User, ArrowLeft } from 'lucide-react'
+import Header from '../../components/Header'
 import Link from 'next/link'
 import Image from 'next/image'
-import Header from '../../components/Header'
+import { Calendar, User, ArrowRight, Twitter, Instagram, Linkedin } from 'lucide-react'
 
-interface BlogPost {
-  id: string
-  title: string
-  content: string
-  excerpt: string
-  author: {
-    name: string
-    avatar?: string
-  }
-  date: string
-  cover?: string
-  tags: string[]
-}
-
-// Sample blog posts data (Alpine theme style)
-const samplePosts: BlogPost[] = [
+const articles = [
   {
-    id: '1',
-    title: 'Get started with Cloutopia',
-    content: `Creating cloud recognition insights with Cloutopia is as easy as uploading a photo, as well as sharing discoveries across platforms.
-
-## Upload Your First Cloud Photo
-
-Open the main interface and follow these steps:
-
-1. Click the upload button or drag and drop your image
-2. Wait for AI analysis
-3. Explore the detailed cloud type identification
-4. Ask questions about weather patterns and locations
-
-## Understanding Cloud Types
-
-Cloutopia can identify various cloud formations:
-- **Cumulus**: Puffy, cotton-like clouds indicating fair weather
-- **Stratus**: Layer clouds that often bring overcast conditions  
-- **Cirrus**: High, wispy clouds that may signal weather changes
-- **Cumulonimbus**: Towering clouds associated with thunderstorms
-
-## Share Your Discoveries
-
-Once you've analyzed your clouds:
-- Save insights to your personal collection
-- Generate shareable blog posts from conversations
-- Contribute to the cloud recognition community
-
-## Deploy Your Knowledge
-
-You can apply cloud recognition skills to:
-- Weather prediction and planning
-- Photography and artistic projects
-- Educational content creation
-- Outdoor activity preparation
-
-The AI becomes more accurate with diverse cloud photos and user interactions.`,
-    excerpt: 'Creating cloud recognition insights with Cloutopia is as easy as uploading a photo, as well as sharing discoveries across platforms.',
-    author: {
-      name: 'Cloutopia Team'
-    },
-    date: '2024-08-22',
-    cover: '/assets/cover.jpg',
-    tags: ['get-started', 'tutorial', 'clouds']
+    id: 1,
+    title: "Understanding Cumulus Clouds: Nature's Cotton Balls",
+    excerpt: "Discover the fascinating world of cumulus clouds, their formation, and what they tell us about the weather. These puffy white clouds are more complex than they appear.",
+    author: "Dr. Sarah Chen",
+    date: "January 15, 2024",
+    image: "/assets/cumulus-clouds.jpg",
+    tags: ["Cloud Types", "Weather", "Education"],
+    featured: true
   },
   {
-    id: '2',
-    title: 'Configure Your Cloud Analysis',
-    content: `Learn how to configure Cloutopia with advanced settings for more detailed cloud analysis and weather insights.
-
-## Analysis Settings
-
-Customize your cloud recognition experience:
-- **Confidence Levels**: Set minimum confidence thresholds
-- **Detail Level**: Choose between quick or comprehensive analysis
-- **Location Services**: Enable GPS for enhanced location guessing
-- **Weather Integration**: Connect with weather APIs for context
-
-## Advanced Features
-
-Unlock powerful capabilities:
-- **Multi-Image Analysis**: Compare multiple cloud photos
-- **Time-lapse Recognition**: Track cloud formation changes
-- **Weather Pattern Correlation**: Link clouds to weather data
-- **Custom Training**: Teach the AI about local cloud types
-
-## Privacy and Data
-
-Your images and conversations are handled securely:
-- Local processing when possible
-- Encrypted data transmission
-- Optional cloud backup
-- User-controlled data retention
-
-Configure these settings to match your needs and privacy preferences.`,
-    excerpt: 'Learn how to configure Cloutopia with advanced settings for more detailed cloud analysis and weather insights.',
-    author: {
-      name: 'Technical Team'
-    },
-    date: '2024-08-22',
-    tags: ['configuration', 'advanced', 'settings']
+    id: 2,
+    title: "The Art of Storm Photography: Capturing Nature's Drama",
+    excerpt: "Learn professional techniques for safely photographing storms and dramatic cloud formations. From equipment tips to composition secrets.",
+    author: "Mark Rodriguez",
+    date: "January 12, 2024",
+    image: "/assets/storm-clouds.jpg",
+    tags: ["Photography", "Storms", "Tutorial"]
   },
   {
-    id: '3',
-    title: 'Write Cloud Articles',
-    content: `Transform your cloud observations into engaging articles and stories using Cloutopia's built-in content creation tools.
-
-## From Chat to Article
-
-Converting conversations into articles is straightforward:
-- Upload and analyze your cloud photos
-- Have detailed conversations with the AI
-- Use the "Generate Article" feature
-- Edit and customize the content
-- Publish to your blog or social media
-
-## Storytelling Tips
-
-Make your cloud stories compelling:
-- **Start with Wonder**: Capture the moment you noticed the clouds
-- **Add Scientific Context**: Include the AI's technical analysis
-- **Share Personal Insights**: Add your own observations and feelings
-- **Include Visual Evidence**: Feature your original photos prominently
-
-## Content Formats
-
-Cloutopia supports various content types:
-- **Quick Observations**: Short posts about interesting cloud formations
-- **Detailed Analysis**: In-depth articles about weather patterns
-- **Photo Essays**: Visual stories with minimal text
-- **Educational Content**: Teaching others about cloud types
-
-## Publishing Options
-
-Share your content across platforms:
-- Internal blog system
-- Export to external blogging platforms
-- Social media integration
-- PDF generation for offline sharing
-
-Your cloud discoveries can inspire and educate others about the fascinating world above us.`,
-    excerpt: 'Transform your cloud observations into engaging articles and stories using Cloutopia\'s built-in content creation tools.',
-    author: {
-      name: 'Content Creator'
-    },
-    date: '2024-08-22',
-    tags: ['writing', 'content', 'storytelling']
+    id: 3,
+    title: "Climate Change and Cloud Patterns: What We're Learning",
+    excerpt: "New research reveals how global climate change is affecting cloud formation patterns worldwide. Scientists are using AI to track these changes.",
+    author: "Dr. Emily Watson",
+    date: "January 10, 2024",
+    image: "/assets/climate-clouds.jpg",
+    tags: ["Climate", "Research", "Science"]
+  },
+  {
+    id: 4,
+    title: "Cirrus Clouds: The High-Altitude Messengers",
+    excerpt: "These wispy, high-altitude clouds can predict weather changes 24-48 hours in advance. Learn to read their patterns and what they mean.",
+    author: "Dr. Sarah Chen",
+    date: "January 8, 2024",
+    image: "/assets/cirrus-clouds.jpg",
+    tags: ["Cloud Types", "Weather Prediction", "Education"]
+  },
+  {
+    id: 5,
+    title: "AI in Meteorology: The Future of Weather Prediction",
+    excerpt: "How artificial intelligence is revolutionizing weather forecasting and cloud analysis. Explore the latest breakthroughs in atmospheric science.",
+    author: "Prof. Michael Chang",
+    date: "January 5, 2024",
+    image: "/assets/ai-weather.jpg",
+    tags: ["AI", "Technology", "Future"]
   }
 ]
 
 export default function BlogPage() {
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Simulate loading posts
-    setTimeout(() => {
-      setPosts(samplePosts)
-      setLoading(false)
-    }, 500)
-  }, [])
-
-  if (selectedPost) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        
-        {/* Article Content */}
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <button
-            onClick={() => setSelectedPost(null)}
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Articles
-          </button>
-
-          {/* Article Header */}
-          <header className="mb-8">
-            {selectedPost.cover && (
-              <div className="relative w-full h-64 md:h-96 mb-6 rounded-xl overflow-hidden">
-                <Image
-                  src={selectedPost.cover}
-                  alt={selectedPost.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {selectedPost.title}
-            </h1>
-            
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-gray-600 mb-6">
-              <div className="flex items-center space-x-4 mb-2 sm:mb-0">
-                <span className="text-gray-600">{selectedPost.author.name}</span>
-                <span>•</span>
-                <span>{new Date(selectedPost.date).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</span>
-              </div>
-            </div>
-          </header>
-
-          {/* Article Content */}
-          <div className="prose prose-lg max-w-none">
-            {selectedPost.content.split('\n\n').map((paragraph, index) => {
-              if (paragraph.startsWith('## ')) {
-                return (
-                  <h2 key={index} className="text-2xl font-bold text-gray-900 mt-8 mb-4">
-                    {paragraph.replace('## ', '')}
-                  </h2>
-                )
-              } else if (paragraph.startsWith('### ')) {
-                return (
-                  <h3 key={index} className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-                    {paragraph.replace('### ', '')}
-                  </h3>
-                )
-              } else if (paragraph.startsWith('- ')) {
-                const listItems = paragraph.split('\n').filter(item => item.startsWith('- '))
-                return (
-                  <ul key={index} className="list-disc pl-6 mb-4 space-y-2">
-                    {listItems.map((item, i) => (
-                      <li key={i} className="text-gray-700">
-                        <span dangerouslySetInnerHTML={{
-                          __html: item.replace('- ', '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        }} />
-                      </li>
-                    ))}
-                  </ul>
-                )
-              } else if (paragraph.match(/^\d+\./)) {
-                const listItems = paragraph.split('\n').filter(item => item.match(/^\d+\./))
-                return (
-                  <ol key={index} className="list-decimal pl-6 mb-4 space-y-2">
-                    {listItems.map((item, i) => (
-                      <li key={i} className="text-gray-700">
-                        {item.replace(/^\d+\.\s/, '')}
-                      </li>
-                    ))}
-                  </ol>
-                )
-              } else {
-                return (
-                  <p key={index} className="text-gray-700 mb-4 leading-relaxed">
-                    <span dangerouslySetInnerHTML={{
-                      __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    }} />
-                  </p>
-                )
-              }
-            })}
-          </div>
-        </article>
-      </div>
-    )
-  }
+  const featuredArticle = articles.find(article => article.featured)
+  const otherArticles = articles.filter(article => !article.featured)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
-      {/* Main Content - Alpine Theme Style */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Featured Article */}
-        {posts.length > 0 && (
-          <div className="mb-16">
-            <div 
-              className="relative bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow group"
-              onClick={() => setSelectedPost(posts[0])}
-            >
-              <div className="flex flex-col lg:flex-row">
-                <div className="lg:w-1/2">
-                  {posts[0].cover && (
-                    <div className="relative h-64 lg:h-full">
-                      <Image
-                        src={posts[0].cover}
-                        alt={posts[0].title}
-                        fill
-                        className="object-cover"
-                      />
+      {/* Alpine-style main container */}
+      <div className="max-w-4xl mx-auto px-6 sm:px-8 md:px-16">
+        <main className="py-12">
+          {/* Hero Section - Alpine style */}
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 leading-tight">
+              Cloud Stories & Insights
+            </h1>
+            <div className="max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                Explore the fascinating world of clouds, weather patterns, and atmospheric science through our collection of articles and research.
+              </p>
+            </div>
+          </div>
+
+          {/* Featured Article - Alpine style */}
+          {featuredArticle && (
+            <article className="mb-16 group">
+              <div className="relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-8">
+                <Image
+                  src={featuredArticle.image}
+                  alt={featuredArticle.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="flex items-center space-x-4 text-white/80 text-sm mb-3">
+                    <div className="flex items-center space-x-1">
+                      <User className="w-4 h-4" />
+                      <span>{featuredArticle.author}</span>
                     </div>
-                  )}
-                </div>
-                <div className="lg:w-1/2 p-8 lg:p-12">
-                  <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
-                    {posts[0].title}
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="w-4 h-4" />
+                      <span>{featuredArticle.date}</span>
+                    </div>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight">
+                    {featuredArticle.title}
                   </h2>
-                  <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                    {posts[0].excerpt}
+                  <p className="text-white/90 text-base leading-relaxed mb-4">
+                    {featuredArticle.excerpt}
                   </p>
-                  <div className="text-gray-500 text-sm">
-                    {new Date(posts[0].date).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
+                  <div className="flex flex-wrap gap-2">
+                    {featuredArticle.tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-white/20 text-white text-sm rounded-full backdrop-blur-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
+            </article>
+          )}
+
+          {/* Articles Grid - Alpine style */}
+          <div className="space-y-12">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">
+              Latest Articles
+            </h2>
+            
+            <div className="space-y-8">
+              {otherArticles.map((article) => (
+                <article key={article.id} className="group">
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="md:w-1/3">
+                      <div className="relative overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          width={300}
+                          height={200}
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="md:w-2/3 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400 text-sm mb-3">
+                          <div className="flex items-center space-x-1">
+                            <User className="w-4 h-4" />
+                            <span>{article.author}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{article.date}</span>
+                          </div>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {article.title}
+                        </h3>
+                        
+                        <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                          {article.excerpt}
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {article.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <Link
+                        href={`/blog/${article.id}`}
+                        className="inline-flex items-center text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-colors group"
+                      >
+                        Read more
+                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Article Grid */}
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-300 rounded w-48 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-300 rounded w-64 mx-auto"></div>
+          {/* Newsletter Section - Alpine style */}
+          <div className="mt-24 mb-16 text-center bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-8 md:p-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+              Stay Updated
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
+              Get the latest articles about clouds, weather patterns, and atmospheric science delivered to your inbox.
+            </p>
+            <div className="max-w-md mx-auto">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                />
+                <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                  Subscribe
+                </button>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.slice(1).map((post) => (
-              <article
-                key={post.id}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group"
-                onClick={() => setSelectedPost(post)}
-              >
-                {post.cover && (
-                  <div className="relative h-48">
-                    <Image
-                      src={post.cover}
-                      alt={post.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  
-                  <div className="text-gray-500 text-sm">
-                    {new Date(post.date).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </main>
+        </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Cloutopia</h3>
-            <nav className="flex justify-center space-x-8 mb-8">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">About</Link>
-              <Link href="/blog" className="text-blue-600 font-medium">Articles</Link>
-              <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
+        {/* Alpine-style Footer */}
+        <footer className="flex flex-col items-center py-8 mt-24 border-t border-gray-200 dark:border-gray-700">
+          <div className="mb-8">
+            <nav className="flex justify-center space-x-8 text-base font-medium">
+              <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">About</Link>
+              <Link href="/blog" className="text-blue-600 dark:text-blue-400">Articles</Link>
+              <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Contact</Link>
             </nav>
-            <p className="text-gray-500 text-sm">Follow me on</p>
-            <div className="flex justify-center space-x-4 mt-4">
-              {/* Add social media icons here */}
-            </div>
           </div>
-        </div>
-      </footer>
+          
+          <p className="text-center text-gray-600 dark:text-gray-400 mb-4">
+            Follow me on
+          </p>
+          
+          <div className="flex justify-center space-x-4">
+            <a 
+              href="https://twitter.com/cloutopia" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              aria-label="Twitter"
+            >
+              <Twitter className="w-5 h-5" />
+            </a>
+            <a 
+              href="https://instagram.com/cloutopia" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+            <a 
+              href="https://linkedin.com/company/cloutopia" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-500 dark:text-gray-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
+          </div>
+        </footer>
+      </div>
     </div>
   )
 }
