@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import ChatOverview from './chat-overview';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
-import FloatingNav from './floating-nav';
+import FloatingNav from '@/components/FloatingNav';
 
 interface Message {
   id: string;

@@ -102,11 +102,10 @@ export default function Home() {
                   <Zap className="w-6 h-6 text-green-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Instant Analysis
+                  Blog Creation
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Get immediate AI-powered results with detailed explanations about 
-                  weather patterns and atmospheric conditions.
+                  Turn your cloud discoveries and stories into shareable blog posts and educational content.
                 </p>
               </div>
             </div>
