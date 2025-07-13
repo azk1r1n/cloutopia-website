@@ -10,13 +10,13 @@ export default function FloatingNav() {
   const pathname = usePathname();
 
   const isActiveLink = (href: string) => {
-    if (href === '/' && pathname === '/') return true;
-    if (href !== '/' && pathname.startsWith(href)) return true;
+    if (href === '/ai-chat' && (pathname === '/' || pathname === '/ai-chat')) return true;
+    if (href !== '/ai-chat' && pathname.startsWith(href)) return true;
     return false;
   };
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
+    { href: '/ai-chat', label: 'Home', icon: Home },
     { href: '/about', label: 'About', icon: Info },
     { href: '/blog', label: 'Articles', icon: BookOpen },
     { href: '/contact', label: 'Contact', icon: Mail },

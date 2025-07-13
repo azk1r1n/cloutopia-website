@@ -8,7 +8,10 @@ export default function Footer() {
   const pathname = usePathname();
 
   const isActiveLink = (href: string) => {
-    return pathname === href;
+    if (href === '/about' && pathname === '/about') return true;
+    if (href === '/blog' && pathname.startsWith('/blog')) return true;
+    if (href === '/contact' && pathname === '/contact') return true;
+    return false;
   };
 
   return (
