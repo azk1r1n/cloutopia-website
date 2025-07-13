@@ -65,7 +65,7 @@ The AI becomes more accurate with diverse cloud photos and user interactions.`,
       name: 'Cloutopia Team'
     },
     date: '2024-08-22',
-    cover: '/photos/White Clouds Blue Sky.jpg',
+    cover: '/assets/cover.jpg',
     tags: ['get-started', 'tutorial', 'clouds']
   },
   {
