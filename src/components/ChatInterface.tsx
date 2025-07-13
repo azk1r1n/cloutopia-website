@@ -129,7 +129,7 @@ export default function ChatInterface() {
 
   return (
     <div 
-      className="flex flex-col h-full relative min-h-0"
+      className="flex flex-col h-full bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -150,38 +150,38 @@ export default function ChatInterface() {
 
       {/* Welcome Message */}
       {messages.length === 0 && (
-        <div className="flex-1 flex items-center justify-center overflow-y-auto p-4">
-          <div className="text-center max-w-2xl mx-auto px-4">
+        <div className="flex-1 flex items-center justify-center overflow-y-auto p-6 md:p-8">
+          <div className="text-center max-w-2xl mx-auto">
             <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <ImageIcon className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
               How can I help you today?
             </h2>
-            <p className="text-gray-600 text-lg mb-8">
+            <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg mb-8 leading-relaxed">
               Upload a photo of clouds or sky, and I&apos;ll help identify cloud formations and analyze atmospheric conditions to guess the location.
             </p>
             
             {/* Upload suggestions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+              <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <ImageIcon className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                <h3 className="text-gray-900 font-medium mb-1">Cloud Recognition</h3>
-                <p className="text-gray-600 text-sm">AI-powered cloud type identification with detailed explanations</p>
+                <h3 className="text-gray-900 dark:text-gray-100 font-medium mb-1">Cloud Recognition</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">AI-powered cloud type identification with detailed explanations</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+              <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full mx-auto mb-2"></div>
-                <h3 className="text-gray-900 font-medium mb-1">Location Insights</h3>
-                <p className="text-gray-600 text-sm">Analyze weather patterns and lighting to estimate photo locations</p>
+                <h3 className="text-gray-900 dark:text-gray-100 font-medium mb-1">Location Insights</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Analyze weather patterns and lighting to estimate photo locations</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+              <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-2"></div>
-                <h3 className="text-gray-900 font-medium mb-1">Blog Creation</h3>
-                <p className="text-gray-600 text-sm">Turn your cloud discoveries into shareable blog posts</p>
+                <h3 className="text-gray-900 dark:text-gray-100 font-medium mb-1">Blog Creation</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Turn your cloud discoveries into shareable blog posts</p>
               </div>
             </div>
             
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-gray-500 text-sm">
               💡 Tip: You can drag and drop images anywhere on this page, or click the upload button below
             </p>
           </div>
@@ -190,17 +190,17 @@ export default function ChatInterface() {
 
       {/* Messages */}
       {messages.length > 0 && (
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 min-h-0">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
           {messages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={`max-w-[85%] md:max-w-[80%] rounded-2xl px-4 py-3 ${
                   message.type === 'user'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-900 border border-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
                 }`}
               >
                 {message.image && (
@@ -232,13 +232,13 @@ export default function ChatInterface() {
       )}
 
       {/* Input Area */}
-      <div className="p-4 border-t border-gray-200 bg-white">
+      <div className="p-4 md:p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         {uploadedImage && (
           <div className="mb-3 relative inline-block">
             <img
               src={uploadedImage}
               alt="Preview"
-              className="h-20 w-20 object-cover rounded-lg border border-gray-300"
+              className="h-20 w-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
             />
             <button
               onClick={() => setUploadedImage(null)}
@@ -259,7 +259,7 @@ export default function ChatInterface() {
               onKeyPress={handleKeyPress}
               onPaste={handlePaste}
               placeholder="Ask a question or paste an image..."
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-2xl text-gray-900 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent max-h-32"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent max-h-32"
               rows={1}
             />
           </div>
