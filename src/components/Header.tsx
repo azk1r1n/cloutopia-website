@@ -1,13 +1,21 @@
 'use client';
 
-import { Cloud, Settings } from 'lucide-react';
+import Image from 'next/image';
+import { Settings } from 'lucide-react';
 
 export default function Header() {
   return (
     <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm shrink-0">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <Cloud className="w-8 h-8 text-blue-600" />
+          <Image
+            src="/assets/cloutopia-logo1.png"
+            alt="Cloutopia Logo"
+            width={32}
+            height={32}
+            className="w-16 h-16"
+            priority
+          />
           <h1 className="text-xl font-semibold text-gray-900">Cloutopia</h1>
         </div>
       </div>

@@ -166,18 +166,18 @@ export default function ChatInterface() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
                 <ImageIcon className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                <h3 className="text-gray-900 font-medium mb-1">Cloud Photos</h3>
-                <p className="text-gray-600 text-sm">Upload pictures of clouds for identification</p>
+                <h3 className="text-gray-900 font-medium mb-1">Cloud Recognition</h3>
+                <p className="text-gray-600 text-sm">AI-powered cloud type identification with detailed explanations</p>
               </div>
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full mx-auto mb-2"></div>
-                <h3 className="text-gray-900 font-medium mb-1">Sky Views</h3>
-                <p className="text-gray-600 text-sm">Share atmospheric patterns and weather</p>
+                <h3 className="text-gray-900 font-medium mb-1">Location Insights</h3>
+                <p className="text-gray-600 text-sm">Analyze weather patterns and lighting to estimate photo locations</p>
               </div>
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:bg-gray-100 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-2"></div>
-                <h3 className="text-gray-900 font-medium mb-1">Location Guess</h3>
-                <p className="text-gray-600 text-sm">Get insights about where photo was taken</p>
+                <h3 className="text-gray-900 font-medium mb-1">Blog Creation</h3>
+                <p className="text-gray-600 text-sm">Turn your cloud discoveries into shareable blog posts</p>
               </div>
             </div>
             
