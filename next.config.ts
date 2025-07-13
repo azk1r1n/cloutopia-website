@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         '**/alpine-theme/**',
         '**/backend/**', 
         '**/src/nuxt-app/**',
+        '**/chatbot-example/**',
         '**/node_modules/**'
       ]
     };

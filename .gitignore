@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# example code
+/chatbot-example
+
 # next.js
 /.next/
 /out/
