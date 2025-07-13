@@ -9,14 +9,14 @@ export default function Header() {
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
           <Image
-            src="/assets/cloutopia-logo1.png"
+            src="/assets/cloutopia-logo4.png"
             alt="Cloutopia Logo"
-            width={32}
-            height={32}
-            className="w-16 h-16"
+            width={1024}
+            height={1024}
+            className="w-12 h-12"
             priority
           />
-          <h1 className="text-xl font-semibold text-gray-900">Cloutopia</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Cloutopia</h1>
         </div>
       </div>
       
