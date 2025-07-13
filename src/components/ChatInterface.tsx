@@ -205,6 +205,7 @@ export default function ChatInterface() {
               >
                 {message.image && (
                   <div className="mb-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={message.image}
                       alt="Uploaded"
@@ -235,6 +236,7 @@ export default function ChatInterface() {
       <div className="p-4 md:p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         {uploadedImage && (
           <div className="mb-3 relative inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={uploadedImage}
               alt="Preview"
