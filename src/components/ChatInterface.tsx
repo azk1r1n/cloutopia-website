@@ -114,7 +114,14 @@ Feel free to share an image or describe what you're observing!`;
             <div className="max-w-[500px] mt-20 mx-4 md:mx-0">
               <div className="border-none bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400">
                 <div className="flex flex-row justify-center gap-4 items-center text-zinc-900 dark:text-zinc-50">
-                  <Cloud className="w-8 h-8 text-blue-600" />
+                  <Image
+                    src="/assets/cloutopia-logo4.png"
+                    alt="Cloutopia Logo"
+                    width={1024}
+                    height={1024}
+                    className="w-8 h-8"
+                    priority
+                  />
                   <span className="text-2xl font-bold">Cloutopia</span>
                 </div>
                 <p className="text-center text-zinc-900 dark:text-zinc-50 text-lg font-medium">
