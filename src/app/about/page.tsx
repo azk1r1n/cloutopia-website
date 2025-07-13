@@ -43,7 +43,8 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Location Insights</h3>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Analyze weather patterns and lighting to estimate where your cloud photos were taken.
+                  Analyze atmospheric patterns and lighting to estimate where your 
+                  cloud photos were taken around the world.
               </p>
             </div>
 

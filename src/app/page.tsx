@@ -2,7 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Cloud, Camera, MessageSquare, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { Cloud, Camera, MessageSquare, ArrowRight, Globe, PenTool } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -85,8 +85,8 @@ export default function Home() {
               </div>
 
               <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 transition-all duration-200 hover:shadow-lg">
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-6">
-                  <Sparkles className="w-6 h-6 text-orange-500" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-6">
+                  <Globe className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Location Insights
@@ -98,8 +98,8 @@ export default function Home() {
               </div>
 
               <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-all duration-200 hover:shadow-lg">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-6">
-                  <Zap className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center mb-6">
+                  <PenTool className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Blog Creation
