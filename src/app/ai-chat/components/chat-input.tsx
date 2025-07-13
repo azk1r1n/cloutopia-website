@@ -1,56 +1,37 @@
-"use client";
+'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Paperclip, Send, X } from 'lucide-react';
 import Image from 'next/image';
 
-interface CloudInputProps {
+interface ChatInputProps {
   input: string;
   setInput: (value: string) => void;
-  handleSubmit: (e: React.FormEvent) => void;
+  handleSubmit: (e?: React.FormEvent) => void;
   isLoading: boolean;
-  onImageUpload: (file: File) => void;
   uploadedImage?: string;
+  onImageUpload: (file: File) => void;
   onRemoveImage: () => void;
+  isDragOver: boolean;
+  onDrop: (e: React.DragEvent) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: (e: React.DragEvent) => void;
 }
 
-export const CloudInput: React.FC<CloudInputProps> = ({
+export default function ChatInput({
   input,
   setInput,
   handleSubmit,
   isLoading,
-  onImageUpload,
   uploadedImage,
+  onImageUpload,
   onRemoveImage,
-}) => {
+  isDragOver,
+  onDrop,
+  onDragOver,
+  onDragLeave,
+}: ChatInputProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  const handleFileSelect = (file: File) => {
-    if (file && file.type.startsWith('image/')) {
-      onImageUpload(file);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      handleFileSelect(files[0]);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
 
   return (
     <div className="mx-4 md:mx-0 relative">
@@ -79,12 +60,11 @@ export const CloudInput: React.FC<CloudInputProps> = ({
               ? 'border-blue-400 bg-blue-50 dark:bg-blue-950' 
               : 'border-gray-200 dark:border-gray-700'
           }`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
         >
           <textarea
-            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={isDragOver ? "Drop your cloud image here..." : "Describe what you see in the clouds, or upload an image..."}
@@ -104,7 +84,7 @@ export const CloudInput: React.FC<CloudInputProps> = ({
             ref={fileInputRef}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleFileSelect(file);
+              if (file) onImageUpload(file);
             }}
             accept="image/*"
             className="hidden"
@@ -132,4 +112,4 @@ export const CloudInput: React.FC<CloudInputProps> = ({
       </form>
     </div>
   );
-};
+}

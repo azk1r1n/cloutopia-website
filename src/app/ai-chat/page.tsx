@@ -1,6 +1,6 @@
 'use client';
 
-import ChatInterface from '@/components/ChatInterface';
+import ChatInterface from './components/chat-interface';
 
 export default function AIChatPage() {
   return <ChatInterface />;

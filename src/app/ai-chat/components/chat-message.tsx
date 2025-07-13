@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import ReactMarkdown from 'react-markdown';
 import { User, Cloud } from 'lucide-react';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
@@ -12,11 +12,11 @@ interface Message {
   timestamp: Date;
 }
 
-interface CloudMessageProps {
+interface ChatMessageProps {
   message: Message;
 }
 
-export const CloudMessage: React.FC<CloudMessageProps> = ({ message }) => {
+export default function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
 
   return (
@@ -93,4 +93,4 @@ export const CloudMessage: React.FC<CloudMessageProps> = ({ message }) => {
       </div>
     </div>
   );
-};
+}

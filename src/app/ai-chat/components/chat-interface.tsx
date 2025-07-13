@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
 import { useState, useRef } from 'react';
-import { CloudMessage } from './cloud-message';
-import { CloudInput } from './cloud-input';
-import { CloudOverview } from './cloud-overview';
+import ChatOverview from './chat-overview';
+import ChatInput from './chat-input';
+import ChatMessage from './chat-message';
+import FloatingNav from './floating-nav';
 
 interface Message {
   id: string;
@@ -13,16 +14,12 @@ interface Message {
   timestamp: Date;
 }
 
-export function CloudChat({
-  initialMessages,
-}: {
-  id: string;
-  initialMessages: Array<Message>;
-}) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+export default function ChatInterface() {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | undefined>();
+  const [isDragOver, setIsDragOver] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -36,6 +33,25 @@ export function CloudChat({
 
   const handleRemoveImage = () => {
     setUploadedImage(undefined);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0 && files[0].type.startsWith('image/')) {
+      handleImageUpload(files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
   };
 
   const generateCloudResponse = (userInput: string, hasImage: boolean): string => {
@@ -90,16 +106,14 @@ Feel free to share an image or describe what you're observing!`;
 
   return (
     <div className="flex flex-row justify-center pb-4 md:pb-8 h-dvh bg-background">
+      <FloatingNav />
       <div className="flex flex-col justify-center max-w-[500px] w-full gap-4">
         <div className="flex flex-col gap-4 h-full w-full items-center overflow-y-auto">
-          {messages.length === 0 && <CloudOverview />}
+          {messages.length === 0 && <ChatOverview />}
 
           <div className="w-full max-w-[500px] px-4 md:px-0">
             {messages.map((message) => (
-              <CloudMessage
-                key={message.id}
-                message={message}
-              />
+              <ChatMessage key={message.id} message={message} />
             ))}
 
             {isLoading && (
@@ -122,20 +136,19 @@ Feel free to share an image or describe what you're observing!`;
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-row gap-2 relative items-end w-full md:max-w-[500px] max-w-[calc(100dvw-32px)] px-4 md:px-0"
-        >
-          <CloudInput
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            isLoading={isLoading}
-            onImageUpload={handleImageUpload}
-            uploadedImage={uploadedImage}
-            onRemoveImage={handleRemoveImage}
-          />
-        </form>
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleSubmit}
+          isLoading={isLoading}
+          uploadedImage={uploadedImage}
+          onImageUpload={handleImageUpload}
+          onRemoveImage={handleRemoveImage}
+          isDragOver={isDragOver}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        />
       </div>
     </div>
   );

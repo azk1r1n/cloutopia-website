@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
 import Image from 'next/image';
+import { Cloud } from 'lucide-react';
 
-export const CloudOverview = () => {
+export default function ChatOverview() {
   return (
     <div className="max-w-[500px] mt-20 mx-4 md:mx-0">
       <div className="border-none bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400">
@@ -12,10 +13,10 @@ export const CloudOverview = () => {
             alt="Cloutopia Logo"
             width={1024}
             height={1024}
-            className="w-12 h-12"
+            className="w-8 h-8"
             priority
           />
-          <span className="text-2xl font-semibold">Cloutopia</span>
+          <span className="text-2xl font-bold">Cloutopia</span>
         </div>
         <p className="text-center text-zinc-900 dark:text-zinc-50 text-lg font-medium">
           How can I help you today?
@@ -29,13 +30,7 @@ export const CloudOverview = () => {
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                <Image
-                  src="/assets/cloutopia-logo4.png"
-                  alt="Cloud Icon"
-                  width={512}
-                  height={512}
-                  className="w-4 h-4 text-blue-600"
-                />
+                <Cloud className="w-4 h-4 text-blue-600" />
               </div>
               <div>
                 <h3 className="font-medium text-zinc-900 dark:text-zinc-100 text-sm">Cloud Recognition</h3>
@@ -63,4 +58,4 @@ export const CloudOverview = () => {
       </div>
     </div>
   );
-};
+}
