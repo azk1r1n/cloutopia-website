@@ -31,9 +31,17 @@ export default function CloudCharacter({ message = "How can I help you today?" }
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     
     // Maximum movement range within the cloud body
-    const maxMovement = 8; // Eyes can move up to 8px from their center
-    const moveX = distance > 0 ? (deltaX / distance) * Math.min(maxMovement, distance / 10) : 0;
-    const moveY = distance > 0 ? (deltaY / distance) * Math.min(maxMovement, distance / 10) : 0;
+    const maxMovement = 6; // Reduced for better control
+    
+    if (distance === 0) return { x: eyeCenterX, y: eyeCenterY };
+    
+    // Normalize direction and apply consistent scaling
+    const normalizedX = deltaX / distance;
+    const normalizedY = deltaY / distance;
+    
+    // Apply consistent movement regardless of distance
+    const moveX = normalizedX * maxMovement;
+    const moveY = normalizedY * maxMovement;
     
     return { 
       x: eyeCenterX + moveX, 
@@ -41,13 +49,13 @@ export default function CloudCharacter({ message = "How can I help you today?" }
     };
   };
 
-  const leftEyePosition = getEyePosition(20, 12); // Base position for left eye
-  const rightEyePosition = getEyePosition(44, 12); // Base position for right eye
+  const leftEyePosition = getEyePosition(25, 15); // Adjusted for new cloud shape
+  const rightEyePosition = getEyePosition(55, 15); // Adjusted for new cloud shape
 
   return (
     <div className="flex flex-col items-center mt-6 mb-4">
-      {/* Speech Bubble */}
-      <div className="relative mb-3">
+      {/* Speech Bubble - moved higher */}
+      <div className="relative mb-6">
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 shadow-sm">
           <p className="text-gray-700 dark:text-gray-300 text-sm font-medium whitespace-nowrap">
             {message}
