@@ -2,7 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Cloud, Camera, MessageSquare, ArrowRight, Sparkles, Zap, Globe, PenTool } from 'lucide-react';
+import { Cloud, Camera, MessageSquare, ArrowRight, Globe, PenTool } from 'lucide-react';
 
 export default function AboutPage() {
   return (

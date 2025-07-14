@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Cloud } from 'lucide-react';
+import CloudCharacter from './cloud-character';
 
 export default function ChatOverview() {
   return (
@@ -18,9 +19,10 @@ export default function ChatOverview() {
           />
           <span className="text-2xl font-bold">Cloutopia</span>
         </div>
-        <p className="text-center text-zinc-900 dark:text-zinc-50 text-lg font-medium">
-          How can I help you today?
-        </p>
+
+        {/* Cloud Character with interactive eyes */}
+        <CloudCharacter message="How can I help you today?" />
+        
         <p className="text-center">
           Upload a photo of clouds or sky, and I&apos;ll help identify cloud formations and 
           analyze atmospheric conditions to guess the location.
