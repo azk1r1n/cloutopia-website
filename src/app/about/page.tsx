@@ -102,7 +102,7 @@ export default function AboutPage() {
                   <PenTool className="w-6 h-6 text-purple-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Instant Analysis
+                  Blog Generation
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Turn your cloud discoveries and stories into shareable blog posts and educational contents.
