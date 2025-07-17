@@ -23,13 +23,13 @@ export function AuthButton() {
       const supabase = createClient();
       
       // Get initial session
-      supabase.auth.getUser()
-        .then(({ data: { user }, error }) => {
+      supabase.auth.getSession()
+        .then(({ data: { session }, error }) => {
           if (error) {
             console.error("Auth error:", error);
             setError(error.message);
           } else {
-            setUser(user);
+            setUser(session?.user ?? null);
           }
           setLoading(false);
         })
