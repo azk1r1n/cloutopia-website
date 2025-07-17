@@ -8,6 +8,8 @@ A Next.js application for cloud recognition and atmospheric analysis. Upload ima
 - 🌍 **Location Analysis**: Atmospheric pattern analysis to guess photo locations  
 - 💬 **Interactive Chat**: Large chat interface for seamless interaction
 - 📸 **Image Upload**: Drag-and-drop or click to upload cloud photos
+- 👤 **User Authentication**: Secure sign-up and login with Supabase
+- 🏠 **User Dashboard**: Personal dashboard to manage analysis history
 - ☀️ **Light Theme**: Modern, clean light interface
 - 📱 **Responsive Design**: Works on desktop and mobile devices
 
@@ -16,18 +18,31 @@ A Next.js application for cloud recognition and atmospheric analysis. Upload ima
 - **Frontend**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Authentication**: Supabase Auth
+- **Database**: Supabase (PostgreSQL)
 - **Icons**: Lucide React
 - **Backend**: Python (future integration)
 
 ## Getting Started
 
-First, install dependencies:
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-Then, run the development server:
+### 2. Set up Supabase
+
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Copy the project URL and anon key from the API settings
+3. Create a `.env.local` file based on `.env.example`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
@@ -35,12 +50,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Authentication Features
+
+- **Sign Up**: Create new user accounts with email/password
+- **Sign In**: Secure login for existing users  
+- **Password Reset**: Email-based password recovery
+- **Protected Routes**: Dashboard and user-specific features require authentication
+- **Session Management**: Automatic session handling with middleware
+
 ## Usage
 
-1. **Upload an Image**: Click the upload button or drag and drop a cloud/sky photo
-2. **Ask Questions**: Type questions about cloud formations, weather patterns, or location
-3. **Get AI Analysis**: Receive detailed analysis of cloud types and atmospheric conditions
-4. **Location Insights**: Get educated guesses about where the photo might have been taken
+1. **Sign Up/Sign In**: Create an account or sign in to access all features
+2. **Upload an Image**: Click the upload button or drag and drop a cloud/sky photo
+3. **Ask Questions**: Type questions about cloud formations, weather patterns, or location
+4. **Get AI Analysis**: Receive detailed analysis of cloud types and atmospheric conditions
+5. **User Dashboard**: Access your personal dashboard to view analysis history
+6. **Location Insights**: Get educated guesses about where the photo might have been taken
 
 ## Project Structure
 

@@ -5,6 +5,7 @@ import { Settings, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { AuthButton } from './auth-button';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,18 +76,16 @@ export default function Header() {
         <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
           <Settings className="w-5 h-5 text-gray-600" />
         </button>
-        <div className="hidden sm:flex items-center gap-2">
-          <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-            Sign In
-          </button>
-          <button className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-            Sign Up
-          </button>
+        <div className="hidden sm:flex">
+          <AuthButton />
         </div>
         <div className="sm:hidden">
-          <button className="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+          <Link 
+            href="/auth/sign-up"
+            className="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
             Sign Up
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -122,6 +121,9 @@ export default function Header() {
             >
               Contact
             </Link>
+            <div className="pt-4 border-t border-gray-200">
+              <AuthButton />
+            </div>
           </nav>
         </div>
       )}
