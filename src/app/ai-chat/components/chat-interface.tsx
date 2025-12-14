@@ -23,14 +23,25 @@ export default function ChatInterface() {
   const [streamingMessage, setStreamingMessage] = useState<string>('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Check if user is near bottom of scroll container
+  const isNearBottom = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return true;
+
+    const threshold = 100; // pixels from bottom
+    const scrollBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    return scrollBottom < threshold;
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Auto-scroll during streaming
+  // Auto-scroll during streaming only if user is near bottom
   useEffect(() => {
-    if (isStreaming && streamingMessage) {
+    if (isStreaming && streamingMessage && isNearBottom()) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [streamingMessage, isStreaming]);
@@ -128,16 +139,18 @@ export default function ChatInterface() {
     e?.preventDefault();
     if (!input.trim() && !uploadedFile) return;
 
+    // Use default message if only image is provided without text
+    const messageText = input.trim() || (uploadedFile ? 'Tell me about this cloud' : '');
+
     const newUserMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: messageText,
       image: uploadedFile ? URL.createObjectURL(uploadedFile) : undefined,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
-    const messageText = input;
     setInput('');
     const fileToSend = uploadedFile;
     setUploadedFile(undefined);
@@ -175,6 +188,7 @@ export default function ChatInterface() {
     <div className="flex-1 flex flex-col relative overflow-hidden">
       {/* Messages Area - Full height scrollable */}
       <div
+        ref={scrollContainerRef}
         className="flex-1 overflow-y-auto"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -188,17 +202,19 @@ export default function ChatInterface() {
               <ChatMessage key={message.id} message={message} />
             ))}
 
-            {isStreaming && (
+            {/* Show streaming message only when there's actual content */}
+            {isStreaming && streamingMessage && (
               <ChatMessage
                 message={{
                   id: 'streaming',
                   role: 'assistant',
-                  content: streamingMessage || '...',
+                  content: streamingMessage,
                   timestamp: new Date(),
                 }}
               />
             )}
 
+            {/* Show loading animation only when waiting for first words */}
             {isStreaming && !streamingMessage && (
               <div className="flex flex-row gap-4 w-full max-w-3xl mx-auto">
                 <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">

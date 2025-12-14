@@ -45,11 +45,127 @@ In Render dashboard, add these environment variables:
 2. Wait for deployment (2-3 minutes)
 3. Copy your backend URL (e.g., `https://cloutopia-backend.onrender.com`)
 
-**Note**: Free tier spins down after 15 minutes of inactivity. First request after sleep takes ~30 seconds.
+**Step 6: Keep Service Alive with UptimeRobot (Recommended)**
+
+Render's free tier spins down after 15 minutes of inactivity, causing 30-60 second delays. To prevent this:
+
+1. Go to [UptimeRobot.com](https://uptimerobot.com) and create a free account
+2. Click **"Add New Monitor"**
+3. Configure monitor:
+   - **Monitor Type**: HTTP(s)
+   - **Friendly Name**: Cloutopia Backend
+   - **URL**: `https://cloutopia-backend.onrender.com/health`
+   - **Monitoring Interval**: 5 minutes
+   - **HTTP Method**: HEAD (uses less bandwidth)
+4. Click **"Create Monitor"**
+
+**How it works:**
+- UptimeRobot pings your `/health` endpoint every 5 minutes
+- This prevents Render from spinning down due to inactivity
+- Your backend stays warm and responds instantly
+- The `/health` endpoint is optimized for this (supports both GET and HEAD methods)
+
+**Benefits:**
+- No cold starts (30-60s delay eliminated)
+- Better user experience
+- Uptime monitoring (get alerts if service goes down)
+- Completely free
+
+**Note on Memory Limits:**
+- Render free tier has 512MB RAM
+- With optimizations, supports ~15-20 concurrent users
+- If you frequently hit memory limits, consider:
+  - **Hugging Face Spaces** (16GB RAM free tier - 32x more!)
+  - **Oracle Cloud Always Free** (1GB RAM - 2x more)
+  - **Render Starter Plan** ($7/month - unlimited RAM)
 
 ---
 
-### Option 2: Railway.app (Alternative - FREE)
+### Option 2: Hugging Face Spaces (Best for Memory-Intensive Workloads)
+
+**Recommended if you frequently hit 512MB memory limits on Render.**
+
+**Pros:**
+- **16GB RAM on free tier** (32x more than Render!)
+- Built for AI/ML applications
+- No spin-down (always running)
+- Persistent storage
+- Perfect for image processing
+
+**Cons:**
+- Requires Docker configuration
+- Less familiar than Render
+
+**Steps:**
+
+1. **Create Hugging Face Account**
+   - Go to [huggingface.co](https://huggingface.co)
+   - Sign up for free
+
+2. **Create New Space**
+   - Click profile → **"New Space"**
+   - Name: `cloutopia-backend`
+   - License: Choose appropriate license
+   - **SDK**: Docker
+   - Click **"Create Space"**
+
+3. **Add Dockerfile**
+
+Create a file named `Dockerfile` in your backend directory (already exists):
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 7860
+CMD uvicorn main:app --host 0.0.0.0 --port 7860
+```
+
+Note: Hugging Face uses port 7860 by default.
+
+4. **Push Code to Space**
+
+You can either:
+
+**Option A: Git Push (Recommended)**
+```bash
+cd backend
+git init
+git remote add space https://huggingface.co/spaces/YOUR_USERNAME/cloutopia-backend
+git add .
+git commit -m "Initial deployment"
+git push space main
+```
+
+**Option B: Upload via Web Interface**
+- Drag and drop your backend files to the Space
+
+5. **Configure Environment Variables**
+   - Go to your Space → **Settings** → **Variables and secrets**
+   - Add secrets:
+     - `GOOGLE_GEMINI_API_KEY`: Your Gemini API key
+     - `ENVIRONMENT`: `production`
+     - `ALLOWED_ORIGINS`: Your Vercel URL
+
+6. **Wait for Build**
+   - Space will automatically build from Dockerfile
+   - Takes 3-5 minutes
+   - Check logs for any errors
+
+7. **Get Your URL**
+   - Format: `https://YOUR_USERNAME-cloutopia-backend.hf.space`
+   - Use this URL in your Vercel environment variables
+
+**Why Choose Hugging Face Spaces?**
+- If you see "Out of Memory" errors on Render
+- Processing large images or multiple concurrent users
+- Want always-on service without cold starts
+- Need persistent storage for caching
+
+---
+
+### Option 3: Railway.app (Alternative - FREE)
 
 **Step 1: Create Railway Account**
 1. Go to [railway.app](https://railway.app)
