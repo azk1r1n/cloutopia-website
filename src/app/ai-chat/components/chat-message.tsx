@@ -20,74 +20,67 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      <div className={`flex-shrink-0 ${isUser ? 'order-2' : 'order-1'}`}>
-        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
-          isUser
-            ? 'bg-blue-600 dark:bg-blue-500 text-white'
-            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-        }`}>
-          {isUser ? <User className="w-5 h-5" /> : <Cloud className="w-5 h-5" />}
-        </div>
-      </div>
-
-      <div className={`flex-1 ${isUser ? 'order-1' : 'order-2'}`}>
-        <div className={`max-w-[90%] ${isUser ? 'ml-auto' : 'mr-auto'}`}>
-          {message.image && (
-            <div className="mb-3">
-              <Image
-                src={message.image}
-                alt="Uploaded cloud"
-                width={400}
-                height={300}
-                className="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm object-cover"
-              />
-            </div>
-          )}
-          
-          <div className={`rounded-xl px-4 py-3 shadow-sm ${
+    <div className="w-full">
+      <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Avatar */}
+        <div className="flex-shrink-0">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
             isUser
               ? 'bg-blue-600 dark:bg-blue-500 text-white'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
           }`}>
-            {isUser ? (
-              <p className="text-sm">{message.content}</p>
-            ) : (
-              <div className="prose prose-sm max-w-none dark:prose-invert">
-                <ReactMarkdown
-                  components={{
-                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                    ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-                    ol: ({ children }) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
-                    li: ({ children }) => <li className="mb-1">{children}</li>,
-                    h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
-                    h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
-                    h3: ({ children }) => <h3 className="text-sm font-bold mb-1">{children}</h3>,
-                    code: ({ children }) => (
-                      <code className="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded text-xs">
-                        {children}
-                      </code>
-                    ),
-                    pre: ({ children }) => (
-                      <pre className="bg-gray-200 dark:bg-gray-700 p-3 rounded-lg overflow-x-auto text-xs">
-                        {children}
-                      </pre>
-                    ),
-                  }}
-                >
-                  {message.content}
-                </ReactMarkdown>
+            {isUser ? <User className="w-4 h-4" /> : <Cloud className="w-4 h-4" />}
+          </div>
+        </div>
+
+        {/* Message Content */}
+        <div className="flex-1 min-w-0">
+          <div className={`${isUser ? 'flex flex-col items-end' : ''}`}>
+            {message.image && (
+              <div className={`mb-3 ${isUser ? '' : 'max-w-lg'}`}>
+                <Image
+                  src={message.image}
+                  alt="Uploaded cloud"
+                  width={400}
+                  height={300}
+                  className="rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm object-cover"
+                />
               </div>
             )}
-          </div>
-          
-          <div className={`text-xs text-gray-500 dark:text-gray-400 mt-1 ${
-            isUser ? 'text-right' : 'text-left'
-          }`}>
-            {message.timestamp.toLocaleTimeString([], { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
+
+            {message.content && (
+              <div className={`${isUser ? 'max-w-lg' : 'max-w-none'}`}>
+                {isUser ? (
+                  <div className="bg-blue-600 dark:bg-blue-500 text-white rounded-2xl px-4 py-2.5 inline-block">
+                    <p className="text-sm leading-relaxed">{message.content}</p>
+                  </div>
+                ) : (
+                  <div className="text-gray-900 dark:text-gray-100 prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-4 last:mb-0 leading-relaxed text-gray-800 dark:text-gray-200">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc ml-5 mb-4 space-y-1 text-gray-800 dark:text-gray-200">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal ml-5 mb-4 space-y-1 text-gray-800 dark:text-gray-200">{children}</ol>,
+                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                        strong: ({ children }) => <strong className="font-semibold text-gray-900 dark:text-gray-100">{children}</strong>,
+                        code: ({ children }) => (
+                          <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-gray-900 dark:text-gray-100">
+                            {children}
+                          </code>
+                        ),
+                        pre: ({ children }) => (
+                          <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm my-3">
+                            {children}
+                          </pre>
+                        ),
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

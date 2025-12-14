@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { Cloud } from 'lucide-react';
 import ChatOverview from './chat-overview';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
@@ -108,54 +109,54 @@ Feel free to share an image or describe what you're observing!`;
   };
 
   return (
-    <div className="w-full">
-      {/* Chat Container - Alpine style */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        {/* Messages Area */}
-        <div
-          className="h-[500px] overflow-y-auto p-6 space-y-6"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
+    <div className="flex-1 flex flex-col relative overflow-hidden">
+      {/* Messages Area - Full height scrollable */}
+      <div
+        className="flex-1 overflow-y-auto"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+      >
+        <div className="max-w-3xl mx-auto px-4 py-8">
           {messages.length === 0 && <ChatOverview />}
 
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
+          <div className="space-y-8">
+            {messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))}
 
-          {isLoading && (
-            <div className="flex flex-row gap-4 w-full">
-              <div className="flex flex-col space-y-1.5 leading-1.5 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-2xl p-4">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    Analyzing...
-                  </span>
+            {isLoading && (
+              <div className="flex flex-row gap-4 w-full max-w-3xl mx-auto">
+                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                  <Cloud className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                 </div>
-                <div className="flex space-x-1">
-                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"></div>
+                <div className="flex items-center space-x-1 py-2">
+                  <div className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"></div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {isDragOver && (
-            <div className="fixed inset-0 bg-blue-500/10 border-4 border-dashed border-blue-500 rounded-2xl flex items-center justify-center pointer-events-none">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">
-                  Drop your cloud image here
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} />
+          </div>
         </div>
+      </div>
 
-        {/* Input Area */}
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
+      {/* Drag overlay */}
+      {isDragOver && (
+        <div className="absolute inset-0 bg-blue-500/10 border-4 border-dashed border-blue-500 flex items-center justify-center pointer-events-none z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+            <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">
+              Drop your cloud image here
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Input Area - Sticky at bottom */}
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="max-w-3xl mx-auto px-4 py-4">
           <ChatInput
             input={input}
             setInput={setInput}
