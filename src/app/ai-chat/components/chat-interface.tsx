@@ -6,7 +6,6 @@ import ChatOverview from './chat-overview';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
 import { fileToBase64 } from '@/lib/utils/imageUtils';
-import { fileToBase64 } from '@/lib/utils/imageUtils';
 
 interface Message {
   id: string;
@@ -20,10 +19,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | undefined>();
-  const [uploadedFile, setUploadedFile] = useState<File | undefined>();
   const [isDragOver, setIsDragOver] = useState(false);
-  const [streamingMessage, setStreamingMessage] = useState<string>('');
-  const [isStreaming, setIsStreaming] = useState(false);
   const [streamingMessage, setStreamingMessage] = useState<string>('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -56,11 +52,9 @@ export default function ChatInterface() {
 
   const handleImageUpload = (file: File) => {
     setUploadedFile(file);
-    setUploadedFile(file);
   };
 
   const handleRemoveImage = () => {
-    setUploadedFile(undefined);
     setUploadedFile(undefined);
   };
 
@@ -140,81 +134,23 @@ export default function ChatInterface() {
 
     return accumulatedContent;
   }
-  async function streamChatResponse(message: string, imageFile?: File): Promise<string> {
-    // Convert image to base64 if provided
-    let imageBase64: string | null = null;
-    if (imageFile) {
-      imageBase64 = await fileToBase64(imageFile);
-    }
-
-    // Make SSE request to backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/stream`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message,
-        image: imageBase64
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    // Parse SSE stream
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error('Response body is not readable');
-    }
-
-    const decoder = new TextDecoder();
-    let accumulatedContent = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          try {
-            const data = JSON.parse(line.slice(6));
-
-            if (data.type === 'token' && data.content) {
-              accumulatedContent += data.content;
-              setStreamingMessage(accumulatedContent);
-            } else if (data.type === 'error') {
-              throw new Error(data.message || 'Unknown error');
-            }
-          } catch (parseError) {
-            console.error('Error parsing SSE data:', parseError);
-          }
-        }
-      }
-    }
-
-    return accumulatedContent;
-  }
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() && !uploadedFile) return;
-    if (!input.trim() && !uploadedFile) return;
+
+    // Use default message if only image is provided without text
+    const messageText = input.trim() || (uploadedFile ? 'Tell me about this cloud' : '');
 
     const newUserMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
-      image: uploadedFile ? URL.createObjectURL(uploadedFile) : undefined,
+      content: messageText,
       image: uploadedFile ? URL.createObjectURL(uploadedFile) : undefined,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
-    const messageText = input;
-    const messageText = input;
     setInput('');
     const fileToSend = uploadedFile;
     setUploadedFile(undefined);
@@ -235,41 +171,16 @@ export default function ChatInterface() {
     } catch (error) {
       console.error('Error streaming response:', error);
       const errorMessage: Message = {
-    const fileToSend = uploadedFile;
-    setUploadedFile(undefined);
-    setIsStreaming(true);
-    setStreamingMessage('');
-
-    try {
-      const fullResponse = await streamChatResponse(messageText, fileToSend);
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: fullResponse,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error('Error streaming response:', error);
-      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: 'Sorry, I encountered an error processing your request. Please make sure the backend server is running and try again.',
-        content: 'Sorry, I encountered an error processing your request. Please make sure the backend server is running and try again.',
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsStreaming(false);
-      setStreamingMessage('');
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsStreaming(false);
       setStreamingMessage('');
       scrollToBottom();
-    }
     }
   };
 
@@ -340,8 +251,6 @@ export default function ChatInterface() {
             input={input}
             setInput={setInput}
             handleSubmit={handleSubmit}
-            isLoading={isStreaming}
-            uploadedFile={uploadedFile}
             isLoading={isStreaming}
             uploadedFile={uploadedFile}
             onImageUpload={handleImageUpload}
