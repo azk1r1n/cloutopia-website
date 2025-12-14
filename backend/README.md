@@ -246,25 +246,179 @@ curl -X POST http://localhost:8000/api/chat \
 
 ## Deployment
 
-### Option 1: Render.com
+### Current Production Setup
 
+**Cloutopia is currently deployed on Render.com Free Tier**
+
+**Platform:** Render.com
+**Plan:** Free (512MB RAM)
+**Auto-deploy:** Enabled from `gemini_integration` branch
+**URL:** `https://cloutopia-backend.onrender.com`
+
+#### Known Issues and Solutions
+
+**Issue 1: Memory Limits (512MB)**
+
+The free tier occasionally hits memory limits with concurrent users or large images.
+
+**Current Mitigations:**
+- Automatic image resizing to 1024px (saves 94% memory)
+- Request size limit: 15MB
+- Decoded image limit: 10MB
+- Explicit garbage collection after each request
+- See `MEMORY_OPTIMIZATION.md` for details
+
+**If memory issues persist, consider these alternatives:**
+
+1. **Hugging Face Spaces** (Recommended alternative)
+   - Free tier: 16GB RAM (32x more than Render!)
+   - Built for ML/AI applications
+   - Persistent storage
+   - Good for image processing workloads
+   - Deployment: Similar to Render, uses Docker
+
+2. **Oracle Cloud Always Free Tier**
+   - Free tier: 1GB RAM + 24GB storage
+   - 2x Render's free tier memory
+   - No spin-down (always running)
+   - Requires more setup than Render
+
+3. **Upgrade Render to Starter ($7/month)**
+   - 512MB → unlimited RAM
+   - No spin-down delays
+   - Better performance
+
+**Issue 2: Free Tier Spin-Down**
+
+Render's free tier spins down after 15 minutes of inactivity, causing 30-60 second delays on first request.
+
+**Solution: UptimeRobot Monitoring**
+
+We use [UptimeRobot](https://uptimerobot.com/) to keep the service alive:
+
+**Setup:**
+1. Create free UptimeRobot account
+2. Add new monitor:
+   - **Type:** HTTP(s)
+   - **URL:** `https://your-backend.onrender.com/health`
+   - **Monitoring Interval:** 5 minutes
+   - **HTTP Method:** HEAD (more efficient than GET)
+3. Save monitor
+
+**How it works:**
+- UptimeRobot pings `/health` every 5 minutes
+- Prevents Render from spinning down due to inactivity
+- `/health` endpoint supports both GET and HEAD methods
+- HEAD method uses less bandwidth (no response body)
+
+**Note:** The `/health` endpoint in `main.py` is configured for UptimeRobot:
+```python
+@app.api_route("/health", methods=["GET", "HEAD"], include_in_schema=False)
+async def health_check():
+    """Health check endpoint. Supports GET and HEAD for monitoring tools."""
+    return "OK"
+```
+
+Both methods are required because:
+- **HEAD**: Used by UptimeRobot (efficient, no body)
+- **GET**: Used by browsers and manual testing
+
+---
+
+### Deployment Options
+
+#### Option 1: Render.com (Current)
+
+**Pros:**
+- Easy setup and auto-deploy
+- Free tier available
+- GitHub integration
+
+**Cons:**
+- 512MB memory limit (can be tight)
+- Spins down after 15 min (use UptimeRobot)
+
+**Steps:**
 1. Create new Web Service on Render
 2. Connect your GitHub repository
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables in Render dashboard
-6. Deploy
+3. Set root directory: `backend`
+4. Set build command: `pip install -r requirements.txt`
+5. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+6. Add environment variables in Render dashboard:
+   - `GOOGLE_GEMINI_API_KEY`
+   - `ENVIRONMENT=production`
+   - `ALLOWED_ORIGINS=https://your-vercel-app.vercel.app`
+7. Deploy
+8. Set up UptimeRobot monitoring (see above)
 
-### Option 2: Railway.app
+#### Option 2: Hugging Face Spaces
 
+**Pros:**
+- 16GB RAM (32x more than Render free tier!)
+- Built for AI/ML workloads
+- No spin-down on free tier
+- Persistent storage
+
+**Cons:**
+- Requires Docker configuration
+- Less familiar deployment flow
+
+**Steps:**
+1. Create account at huggingface.co
+2. Create new Space → Docker template
+3. Add your code to the Space repository
+4. Create `Dockerfile` (see Option 3 below)
+5. Push to Space repository
+6. Configure environment variables in Settings
+
+#### Option 3: Railway.app
+
+**Pros:**
+- $5 free credit monthly
+- Good developer experience
+- No sleep on free tier
+
+**Cons:**
+- Free credit runs out (~500 hours)
+
+**Steps:**
 1. Create new project on Railway
 2. Connect GitHub repository
-3. Railway auto-detects Python and uses requirements.txt
-4. Add environment variables
-5. Deploy
+3. Set root directory: `backend`
+4. Railway auto-detects Python and uses requirements.txt
+5. Add environment variables
+6. Deploy
 
-### Option 3: Google Cloud Run
+#### Option 4: Oracle Cloud Always Free
 
+**Pros:**
+- 1GB RAM (2x Render)
+- Always running (no spin-down)
+- Truly free forever
+
+**Cons:**
+- More complex setup
+- Requires manual server configuration
+
+**Steps:**
+1. Create Oracle Cloud account
+2. Create VM instance (Always Free tier)
+3. Install Python and dependencies
+4. Set up systemd service
+5. Configure firewall and reverse proxy
+
+#### Option 5: Google Cloud Run
+
+**Pros:**
+- Serverless, scales to zero
+- Pay per request
+- Good Gemini API integration
+
+**Cons:**
+- Cold starts (1-3 seconds)
+- Requires Docker knowledge
+
+**Steps:**
 1. Create `Dockerfile`:
 ```dockerfile
 FROM python:3.11-slim
@@ -286,7 +440,10 @@ gcloud run deploy cloutopia-backend --source .
 - **API keys** should only be in backend, never in frontend
 - **Rate limiting** is recommended for production (use libraries like `slowapi`)
 - **Input validation** is handled by Pydantic models
-- **Image size limits** should be enforced (default: 5MB)
+- **Image size limits** are enforced:
+  - Request body: 15MB max (base64 encoded)
+  - Decoded image: 10MB max
+  - Images automatically resized to 1024px to save memory
 
 ## License
 
