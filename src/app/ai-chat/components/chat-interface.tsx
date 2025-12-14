@@ -18,7 +18,6 @@ interface Message {
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | undefined>();
   const [isDragOver, setIsDragOver] = useState(false);
   const [streamingMessage, setStreamingMessage] = useState<string>('');
@@ -193,7 +192,7 @@ export default function ChatInterface() {
               />
             )}
 
-            {isLoading && (
+            {isStreaming && !streamingMessage && (
               <div className="flex flex-row gap-4 w-full max-w-3xl mx-auto">
                 <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                   <Cloud className="w-4 h-4 text-gray-700 dark:text-gray-300" />
