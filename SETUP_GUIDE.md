@@ -265,9 +265,23 @@ Once the backend is running, visit:
 
 These provide interactive API documentation where you can test endpoints directly.
 
+## Deploying to Production
+
+Ready to deploy your app to the cloud? See:
+
+📘 **[QUICKSTART_DEPLOY.md](./QUICKSTART_DEPLOY.md)** - Deploy backend in 5 minutes
+📗 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete deployment guide with all options
+
+The guides cover:
+- Deploying backend to Render.com, Railway.app, or Google Cloud Run
+- Connecting frontend to deployed backend
+- Setting up environment variables in Vercel
+- Troubleshooting common deployment issues
+
 ## Need Help?
 
 - Backend docs: `backend/README.md`
+- Deployment: `DEPLOYMENT_GUIDE.md`
 - Original project docs: `README.md`
 - Claude.md instructions: `CLAUDE.md`
 
