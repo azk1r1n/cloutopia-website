@@ -34,31 +34,31 @@ export default function ChatInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="mx-4 md:mx-0 relative">
+    <div className="relative">
       {uploadedImage && (
-        <div className="mb-4 relative inline-block">
+        <div className="mb-3 relative inline-block">
           <Image
             src={uploadedImage}
             alt="Uploaded cloud"
             width={300}
             height={200}
-            className="max-w-xs max-h-48 rounded-lg border border-gray-200 dark:border-gray-700 object-cover"
+            className="max-w-xs max-h-48 rounded-xl border border-gray-200 dark:border-gray-700 object-cover shadow-sm"
           />
           <button
             onClick={onRemoveImage}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
-      
-      <form onSubmit={handleSubmit} className="flex gap-2">
+
+      <form onSubmit={handleSubmit} className="flex gap-3">
         <div
-          className={`relative flex-1 min-h-[48px] max-h-[200px] overflow-hidden bg-gray-50 dark:bg-gray-900 border-2 rounded-2xl transition-colors ${
-            isDragOver 
-              ? 'border-blue-400 bg-blue-50 dark:bg-blue-950' 
-              : 'border-gray-200 dark:border-gray-700'
+          className={`relative flex-1 min-h-[48px] max-h-[200px] overflow-hidden bg-white dark:bg-gray-900 border rounded-xl transition-all ${
+            isDragOver
+              ? 'border-blue-400 bg-blue-50 dark:bg-blue-950 border-2'
+              : 'border-gray-300 dark:border-gray-600'
           }`}
           onDrop={onDrop}
           onDragOver={onDragOver}
@@ -105,7 +105,7 @@ export default function ChatInput({
         <button
           type="submit"
           disabled={isLoading || (!input.trim() && !uploadedImage)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[48px] flex items-center justify-center"
+          className="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[48px] flex items-center justify-center font-medium shadow-sm"
         >
           <Send className="w-5 h-5" />
         </button>

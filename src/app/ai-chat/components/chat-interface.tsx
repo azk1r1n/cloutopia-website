@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ChatOverview from './chat-overview';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
-import FloatingNav from '@/components/FloatingNav';
 
 interface Message {
   id: string;
@@ -21,6 +20,10 @@ export default function ChatInterface() {
   const [uploadedImage, setUploadedImage] = useState<string | undefined>();
   const [isDragOver, setIsDragOver] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -105,50 +108,68 @@ Feel free to share an image or describe what you're observing!`;
   };
 
   return (
-    <div className="flex flex-row justify-center pb-4 md:pb-8 h-dvh bg-background">
-      <FloatingNav />
-      <div className="flex flex-col justify-center max-w-[500px] w-full gap-4">
-        <div className="flex flex-col gap-4 h-full w-full items-center overflow-y-auto">
-          {messages.length === 0 && <ChatOverview />}
-
-          <div className="w-full max-w-[500px] px-4 md:px-0">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))}
-
-            {isLoading && (
-              <div className="flex flex-row gap-4 px-4 w-full md:px-0 mb-6">
-                <div className="flex flex-col space-y-1.5 leading-1.5 border-gray-200 bg-gray-100 dark:bg-gray-800 rounded-2xl p-4">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Analyzing...
-                    </span>
-                  </div>
-                  <div className="flex space-x-1">
-                    <div className="h-2 w-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="h-2 w-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="h-2 w-2 bg-gray-500 rounded-full animate-bounce"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-
-        <ChatInput
-          input={input}
-          setInput={setInput}
-          handleSubmit={handleSubmit}
-          isLoading={isLoading}
-          uploadedImage={uploadedImage}
-          onImageUpload={handleImageUpload}
-          onRemoveImage={handleRemoveImage}
-          isDragOver={isDragOver}
+    <div className="w-full">
+      {/* Chat Container - Alpine style */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {/* Messages Area */}
+        <div
+          className="h-[500px] overflow-y-auto p-6 space-y-6"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-        />
+        >
+          {messages.length === 0 && <ChatOverview />}
+
+          {messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))}
+
+          {isLoading && (
+            <div className="flex flex-row gap-4 w-full">
+              <div className="flex flex-col space-y-1.5 leading-1.5 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-2xl p-4">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                    Analyzing...
+                  </span>
+                </div>
+                <div className="flex space-x-1">
+                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"></div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isDragOver && (
+            <div className="fixed inset-0 bg-blue-500/10 border-4 border-dashed border-blue-500 rounded-2xl flex items-center justify-center pointer-events-none">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">
+                  Drop your cloud image here
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
+          <ChatInput
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleSubmit}
+            isLoading={isLoading}
+            uploadedImage={uploadedImage}
+            onImageUpload={handleImageUpload}
+            onRemoveImage={handleRemoveImage}
+            isDragOver={isDragOver}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+          />
+        </div>
       </div>
     </div>
   );
