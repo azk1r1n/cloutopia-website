@@ -9,7 +9,7 @@ interface ChatInputProps {
   setInput: (value: string) => void;
   handleSubmit: (e?: React.FormEvent) => void;
   isLoading: boolean;
-  uploadedImage?: string;
+  uploadedFile?: File;
   onImageUpload: (file: File) => void;
   onRemoveImage: () => void;
   isDragOver: boolean;
@@ -23,7 +23,7 @@ export default function ChatInput({
   setInput,
   handleSubmit,
   isLoading,
-  uploadedImage,
+  uploadedFile,
   onImageUpload,
   onRemoveImage,
   isDragOver,
@@ -35,10 +35,10 @@ export default function ChatInput({
 
   return (
     <div className="w-full">
-      {uploadedImage && (
+      {uploadedFile && (
         <div className="mb-3 relative inline-block">
           <Image
-            src={uploadedImage}
+            src={URL.createObjectURL(uploadedFile)}
             alt="Uploaded cloud"
             width={300}
             height={200}
@@ -104,7 +104,7 @@ export default function ChatInput({
 
             <button
               type="submit"
-              disabled={isLoading || (!input.trim() && !uploadedImage)}
+              disabled={isLoading || (!input.trim() && !uploadedFile)}
               className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               aria-label="Send message"
             >
