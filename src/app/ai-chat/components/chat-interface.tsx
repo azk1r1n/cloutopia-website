@@ -5,6 +5,7 @@ import { Cloud } from 'lucide-react';
 import ChatOverview from './chat-overview';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
+import { fileToBase64 } from '@/lib/utils/imageUtils';
 
 interface Message {
   id: string;
@@ -17,9 +18,10 @@ interface Message {
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState<string | undefined>();
+  const [uploadedFile, setUploadedFile] = useState<File | undefined>();
   const [isDragOver, setIsDragOver] = useState(false);
+  const [streamingMessage, setStreamingMessage] = useState<string>('');
+  const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,12 +33,11 @@ export default function ChatInterface() {
   };
 
   const handleImageUpload = (file: File) => {
-    const url = URL.createObjectURL(file);
-    setUploadedImage(url);
+    setUploadedFile(file);
   };
 
   const handleRemoveImage = () => {
-    setUploadedImage(undefined);
+    setUploadedFile(undefined);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -58,54 +59,109 @@ export default function ChatInterface() {
     setIsDragOver(false);
   };
 
-  const generateCloudResponse = (userInput: string, hasImage: boolean): string => {
-    if (hasImage) {
-      return `I can see the cloud formation in your image! Based on the atmospheric patterns and cloud structures, this appears to be a ${['cumulus', 'stratus', 'cirrus', 'nimbus'][Math.floor(Math.random() * 4)]} cloud formation. 
-
-The atmospheric conditions suggest this could be taken in a ${['temperate', 'subtropical', 'continental', 'maritime'][Math.floor(Math.random() * 4)]} climate region. The cloud patterns and lighting conditions are consistent with locations in areas like ${['the Pacific Northwest', 'the Mediterranean region', 'the Great Plains', 'coastal California'][Math.floor(Math.random() * 4)]}.
-
-Would you like me to analyze any specific aspects of the atmospheric conditions or cloud formations in more detail?`;
+  async function streamChatResponse(message: string, imageFile?: File): Promise<string> {
+    // Convert image to base64 if provided
+    let imageBase64: string | null = null;
+    if (imageFile) {
+      imageBase64 = await fileToBase64(imageFile);
     }
-    
-    return `I'd be happy to help you identify cloud formations and analyze atmospheric conditions! You can describe what you see in the sky, or better yet, upload a photo of the clouds you'd like me to analyze. 
 
-I can help identify:
-- Cloud types (cumulus, stratus, cirrus, etc.)
-- Weather patterns
-- Potential geographic regions based on atmospheric conditions
-- Time of day estimates based on lighting
+    // Make SSE request to backend
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        image: imageBase64
+      }),
+    });
 
-Feel free to share an image or describe what you're observing!`;
-  };
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Parse SSE stream
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('Response body is not readable');
+    }
+
+    const decoder = new TextDecoder();
+    let accumulatedContent = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+
+            if (data.type === 'token' && data.content) {
+              accumulatedContent += data.content;
+              setStreamingMessage(accumulatedContent);
+            } else if (data.type === 'error') {
+              throw new Error(data.message || 'Unknown error');
+            }
+          } catch (parseError) {
+            console.error('Error parsing SSE data:', parseError);
+          }
+        }
+      }
+    }
+
+    return accumulatedContent;
+  }
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim() && !uploadedImage) return;
+    if (!input.trim() && !uploadedFile) return;
 
     const newUserMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
-      image: uploadedImage,
+      image: uploadedFile ? URL.createObjectURL(uploadedFile) : undefined,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
+    const messageText = input;
     setInput('');
-    setUploadedImage(undefined);
-    setIsLoading(true);
+    const fileToSend = uploadedFile;
+    setUploadedFile(undefined);
+    setIsStreaming(true);
+    setStreamingMessage('');
 
-    setTimeout(() => {
-      const response: Message = {
+    try {
+      const fullResponse = await streamChatResponse(messageText, fileToSend);
+
+      const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: generateCloudResponse(input, !!uploadedImage),
+        content: fullResponse,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, response]);
-      setIsLoading(false);
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error streaming response:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Sorry, I encountered an error processing your request. Please make sure the backend server is running and try again.',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsStreaming(false);
+      setStreamingMessage('');
       scrollToBottom();
-    }, 1000);
+    }
   };
 
   return (
@@ -125,7 +181,18 @@ Feel free to share an image or describe what you're observing!`;
               <ChatMessage key={message.id} message={message} />
             ))}
 
-            {isLoading && (
+            {isStreaming && (
+              <ChatMessage
+                message={{
+                  id: 'streaming',
+                  role: 'assistant',
+                  content: streamingMessage || '...',
+                  timestamp: new Date(),
+                }}
+              />
+            )}
+
+            {isStreaming && !streamingMessage && (
               <div className="flex flex-row gap-4 w-full max-w-3xl mx-auto">
                 <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                   <Cloud className="w-4 h-4 text-gray-700 dark:text-gray-300" />
@@ -161,8 +228,8 @@ Feel free to share an image or describe what you're observing!`;
             input={input}
             setInput={setInput}
             handleSubmit={handleSubmit}
-            isLoading={isLoading}
-            uploadedImage={uploadedImage}
+            isLoading={isStreaming}
+            uploadedFile={uploadedFile}
             onImageUpload={handleImageUpload}
             onRemoveImage={handleRemoveImage}
             isDragOver={isDragOver}
