@@ -97,7 +97,7 @@ async def stream_gemini_response(
     image_data: Optional[str] = None,
 ) -> AsyncGenerator[str, None]:
     """
-    Stream AI response from Gemini API.
+    Stream AI response from Gemini API word-by-word for gradual display.
 
     Args:
         model: Initialized Gemini model
@@ -105,11 +105,13 @@ async def stream_gemini_response(
         image_data: Optional base64-encoded image
 
     Yields:
-        str: Tokens/chunks of the AI response
+        str: Individual words of the AI response
 
     Raises:
         Exception: If Gemini API call fails
     """
+    import asyncio
+
     try:
         # Prepare the prompt
         prompt_parts = []
@@ -134,10 +136,17 @@ async def stream_gemini_response(
             ),
         )
 
-        # Stream the response chunks
+        # Stream the response chunks word-by-word for smooth display
         for chunk in response:
             if chunk.text:
-                yield chunk.text
+                # Split chunk into words while preserving spaces and newlines
+                words = re.split(r'(\s+)', chunk.text)
+
+                for word in words:
+                    if word:  # Skip empty strings
+                        yield word
+                        # Small delay for smoother visual effect (optional)
+                        await asyncio.sleep(0.01)
 
     except Exception as e:
         error_message = str(e)
