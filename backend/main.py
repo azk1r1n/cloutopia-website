@@ -3,12 +3,12 @@ Cloutopia Backend API
 FastAPI application with Google Gemini integration for cloud recognition.
 """
 
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from app.config import settings
 from app.routers import chat
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 # Create FastAPI application with request size limits
 app = FastAPI(
@@ -16,6 +16,7 @@ app = FastAPI(
     description="Cloud recognition and analysis API powered by Google Gemini",
     version="1.0.0",
 )
+
 
 # Middleware to limit request body size (15MB max to account for base64 overhead)
 @app.middleware("http")
@@ -30,12 +31,13 @@ async def limit_request_size(request: Request, call_next):
             return JSONResponse(
                 status_code=413,
                 content={
-                    "detail": f"Request body too large. Maximum size: {max_size / (1024*1024):.0f}MB"
+                    "detail": f"Request body too large. Maximum size: {max_size / (1024 * 1024):.0f}MB"
                 },
             )
 
     response = await call_next(request)
     return response
+
 
 # Configure CORS middleware
 app.add_middleware(
@@ -50,14 +52,10 @@ app.add_middleware(
 app.include_router(chat.router, prefix="/api", tags=["chat"])
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"], include_in_schema=False)
 async def health_check():
     """Health check endpoint to verify the API is running."""
-    return {
-        "status": "healthy",
-        "service": "cloutopia-backend",
-        "version": "1.0.0",
-    }
+    return "OK"
 
 
 @app.get("/")
