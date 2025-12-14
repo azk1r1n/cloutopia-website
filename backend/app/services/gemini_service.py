@@ -58,15 +58,16 @@ def initialize_gemini() -> genai.GenerativeModel:
     return model
 
 
-def prepare_image_from_base64(base64_string: str) -> Image.Image:
+def prepare_image_from_base64(base64_string: str, max_size: int = 1024) -> Image.Image:
     """
-    Convert base64-encoded image string to PIL Image.
+    Convert base64-encoded image string to PIL Image with size optimization.
 
     Args:
         base64_string: Base64 string with or without data URI prefix
+        max_size: Maximum dimension (width or height) in pixels. Default 1024.
 
     Returns:
-        PIL.Image.Image: Decoded PIL Image object
+        PIL.Image.Image: Decoded and optimized PIL Image object
 
     Raises:
         ValueError: If base64 string is invalid or cannot be decoded
@@ -82,8 +83,25 @@ def prepare_image_from_base64(base64_string: str) -> Image.Image:
         # Decode base64 to bytes
         image_bytes = base64.b64decode(base64_data)
 
+        # Check size limit (10MB max for base64 data)
+        max_bytes = 10 * 1024 * 1024  # 10MB
+        if len(image_bytes) > max_bytes:
+            raise ValueError(f"Image too large: {len(image_bytes)} bytes (max: {max_bytes})")
+
         # Convert to PIL Image
         image = Image.open(io.BytesIO(image_bytes))
+
+        # Resize if image is too large (saves memory)
+        # Gemini doesn't need full resolution for cloud analysis
+        if image.width > max_size or image.height > max_size:
+            # Calculate new size maintaining aspect ratio
+            ratio = min(max_size / image.width, max_size / image.height)
+            new_size = (int(image.width * ratio), int(image.height * ratio))
+            image = image.resize(new_size, Image.Resampling.LANCZOS)
+
+        # Convert to RGB if necessary (removes alpha channel, saves memory)
+        if image.mode not in ('RGB', 'L'):
+            image = image.convert('RGB')
 
         return image
 
@@ -111,14 +129,16 @@ async def stream_gemini_response(
         Exception: If Gemini API call fails
     """
     import asyncio
+    import gc
 
+    image = None  # Initialize to None for cleanup
     try:
         # Prepare the prompt
         prompt_parts = []
 
-        # Add image if provided
+        # Add image if provided (resized to save memory)
         if image_data:
-            image = prepare_image_from_base64(image_data)
+            image = prepare_image_from_base64(image_data, max_size=1024)
             prompt_parts.append(image)
 
         # Add user message
@@ -135,6 +155,12 @@ async def stream_gemini_response(
                 max_output_tokens=2048,
             ),
         )
+
+        # Clear image from memory after sending to API
+        if image:
+            prompt_parts.clear()  # Remove references
+            image = None
+            gc.collect()  # Suggest garbage collection
 
         # Stream the response chunks word-by-word for smooth display
         for chunk in response:
@@ -157,6 +183,11 @@ async def stream_gemini_response(
             raise Exception("API rate limit exceeded. Please try again in a moment.")
         else:
             raise Exception(f"Failed to generate response: {error_message}")
+    finally:
+        # Ensure cleanup even if error occurs
+        if image:
+            image = None
+        gc.collect()
 
 
 async def generate_complete_response(
@@ -176,15 +207,18 @@ async def generate_complete_response(
     Raises:
         Exception: If Gemini API call fails
     """
+    import gc
+
     model = initialize_gemini()
+    image = None
 
     try:
         # Prepare the prompt
         prompt_parts = []
 
-        # Add image if provided
+        # Add image if provided (resized to save memory)
         if image_data:
-            image = prepare_image_from_base64(image_data)
+            image = prepare_image_from_base64(image_data, max_size=1024)
             prompt_parts.append(image)
 
         # Add user message
@@ -201,6 +235,12 @@ async def generate_complete_response(
             ),
         )
 
+        # Clear image from memory after getting response
+        if image:
+            prompt_parts.clear()
+            image = None
+            gc.collect()
+
         return response.text
 
     except Exception as e:
@@ -212,3 +252,8 @@ async def generate_complete_response(
             raise Exception("API rate limit exceeded. Please try again in a moment.")
         else:
             raise Exception(f"Failed to generate response: {error_message}")
+    finally:
+        # Ensure cleanup
+        if image:
+            image = None
+        gc.collect()
